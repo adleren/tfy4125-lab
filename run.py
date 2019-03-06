@@ -5,7 +5,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 # Max utslag
-coeffsMAX = iptrack('data/max/track1')
+coeffsMAX = iptrack('data/max/avg')
 
 coeffsTauto = iptrack('data/Tautochron/Tautochron.txt')
 
@@ -16,7 +16,7 @@ coeffsskraa = iptrack('data/Skråplan/Skråplan.txt')
 
 
 def f(x, coeffs):
-	return trvalues(coeffs, x)[0]
+	return trvalues(coeffs, x)[4]
 
 x = np.linspace(0, 1.3, 101)
 
