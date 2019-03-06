@@ -16,7 +16,7 @@ coeffsskraa = iptrack('data/Skråplan/Skråplan.txt')
 
 
 def f(x, coeffs):
-	return trvalues(coeffs, x)[4]
+	return trvalues(coeffs, x)[0]
 
 x = np.linspace(0, 1.3, 101)
 
