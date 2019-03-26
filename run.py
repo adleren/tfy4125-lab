@@ -5,15 +5,11 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 # Max utslag
-coeffsMAX = iptrack('data/max/avg')
+coeffsMAX = iptrack('data/max/max.txt')
 
-coeffsTauto = iptrack('data/Tautochron/Tautochron.txt')
+coeffsTauto = iptrack('data/tautochrone/tautochrone.txt')
 
-coeffsskraa = iptrack('data/Skråplan/Skråplan.txt')
-
-
-
-
+coeffsskraa = iptrack('data/slope/slope.txt')
 
 def f(x, coeffs):
 	return trvalues(coeffs, x)[0]
