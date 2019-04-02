@@ -24,7 +24,7 @@ def posX(xn, h, vn, alpha):
 
 def integrate(coeffs):
     vn = 0
-    xn = 0.1
+    xn = 0
     h = 0.001
     m = 0.0027
     tn = 0
