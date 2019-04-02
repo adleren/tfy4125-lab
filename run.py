@@ -4,17 +4,13 @@ from math import pi
 import numpy as np
 from matplotlib import pyplot as plt
 
-# Max utslag
 coeffsMAX = iptrack('data/max/max.txt')
-
 coeffsTauto = iptrack('data/tautochrone/tautochrone.txt')
-
-coeffsskraa = iptrack('data/slope/slope.txt')
+coeffsSkraa = iptrack('data/slope/slope.txt')
 
 def accel(alpha):
-    g = 9.81
+    g = -9.81
     c = 2 / 3  #constant of moment of inertia for a hollow sphere
-
     return (g * np.sin(alpha)) / (1 + c)
 
 
@@ -29,14 +25,16 @@ def posX(xn, h, vn, alpha):
 def integrate(coeffs):
     vn = 0
     xn = 0.1
-    h = 1e-3
+    h = 0.001
     m = 0.0027
     tn = 0
+    alpha = trvalues(coeffs, xn)[3]
+    R = trvalues(coeffs, xn)[4]
     xlist = [xn]
     vlist = [vn]
     tlist = [tn]
-    friclist = [0]
-    normlist = [0]
+    friclist = [(2 / 3) * m * 9.81 * np.sin(alpha)]
+    normlist = [m * 9.81 * np.cos(alpha) + m * vn**2 / R]
 
     while xn < 1.30:
         alpha = trvalues(coeffs, xn)[3]
@@ -67,8 +65,7 @@ def plotVel(filename):
     vlist = [0]
 
     for i in range(1, len(xdata)):
-        v = np.sqrt((xdata[i] - xdata[i - 1])**2 +
-                    (ydata[i] - ydata[i - 1])**2) / (tdata[i] - tdata[i - 1])
+        v = np.sqrt((xdata[i] - xdata[i - 1])**2 + (ydata[i] - ydata[i - 1])**2) / (tdata[i] - tdata[i - 1])
         vlist.append(v)
     return [tdata, vlist]
 
@@ -77,43 +74,50 @@ def plotAll(filename, coeffs):
     tlist, xlist, vlist, normlist, friclist = integrate(coeffs)
     velo = plotVel(filename)
     pos = plotPosX(filename)
-    fig = plt.figure()
+    plt.figure()
     print("TID", tlist[-1])
     print("X", xlist[-1])
 
     plt.subplot(2, 2, 1)
-    plt.subplots_adjust(hspace=0.8, wspace=0.6)
+    plt.subplots_adjust(hspace=1.0, wspace=0.6)
     plt.plot(tlist, xlist, "--")
     plt.plot(pos[0], pos[1])
     plt.title("Posisjon")
     plt.xlabel("Tid [s]")
+    plt.xticks(np.linspace(0, 1, num=5))
     plt.ylabel("X-posisjon [m]")
+    plt.yticks(np.arange(0, 1.5, step=0.20))
+    plt.ylim(0, 1.4)
     plt.legend([r"Numerisk", r"Eksperimentell"], prop={'size': 6})
     plt.subplot(2, 2, 2)
     plt.plot(tlist, vlist, "--")
     plt.plot(velo[0], velo[1])
     plt.title("Fart")
-    plt.ylabel("Hastighet i x-retning [m/s]")
     plt.xlabel("Tid [s]")
+    plt.xticks(np.linspace(0, 1, num=5))
+    plt.ylabel("Hastighet i x-retning [m/s]")
+    plt.yticks(np.arange(0, 3.5, step=0.5))
     plt.legend([r"Numerisk", r"Experimentell"], prop={'size': 6})
     plt.subplot(2, 2, 3)
 
     plt.plot(tlist, normlist)
     plt.title("Normalkraft")
     plt.xlabel("Tid [s]")
+    plt.xticks(np.linspace(0, 1, num=5))
     plt.ylabel("Kraft [N]")
     plt.subplot(2, 2, 4)
     plt.plot(tlist, friclist)
     plt.title("Friksjon")
     plt.xlabel("Tid [s]")
+    plt.xticks(np.linspace(0, 1, num=5))
     plt.ylabel("Kraft [N]")
     plt.show()
 
 
-plotAll('data/Skråplan/Skråplan.txt', coeffsskraa)
-plotAll('data/Tautochron/Tautochron.txt', coeffsTauto)
+plotAll('data/slope/slope.txt', coeffsSkraa)
+plotAll('data/tautochrone/tautochrone.txt', coeffsTauto)
 plotAll('data/max/testing2', coeffsMAX)
-x = np.linspace(0.03, 1.3, 1000)
+# x = np.linspace(0.03, 1.3, 1000)
 
 #tlist, vlist = plotPosX('data/Tautochron/Tautochron.txt')
 #tlist2, vlist2 = plotPosX('data/max/testing2')
@@ -128,7 +132,7 @@ def g(x):
     return 360 * trvalues(coeffsTauto, x)[3] / pi
 
 
-f, ax = plt.subplots(1)
+# f, ax = plt.subplots(1)
 
 #ax.plot(x, g(x))
 #ax.set_ylim(ymin=0)
